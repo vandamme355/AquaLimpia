@@ -1,24 +1,12 @@
-import pandas as pd
 import matplotlib.pyplot as plt
+from funciones import cargar_datos, calcular_eficiencia, agrupar_por_planta
 
 # Cargar datos
-df = pd.read_excel("dataset_set_A_aguas_residuales.xlsx")
+df = cargar_datos("dataset_set_A_aguas_residuales.xlsx")
 
-# Exploración
-print(df.head())
-print(df.info())
-
-# Limpieza (aunque no tienes nulos, lo dejamos correcto)
-df["DBO_entrada_mg_L"] = df["DBO_entrada_mg_L"].fillna(df["DBO_entrada_mg_L"].mean())
-df["DBO_salida_mg_L"] = df["DBO_salida_mg_L"].fillna(df["DBO_salida_mg_L"].mean())
-
-# Cálculo de eficiencia (IMPORTANTE)
-df["eficiencia"] = (
-    (df["DBO_entrada_mg_L"] - df["DBO_salida_mg_L"]) / df["DBO_entrada_mg_L"]
-) * 100
-
-# Agrupar por planta
-resumen = df.groupby("planta")[["eficiencia", "DBO_salida_mg_L"]].mean()
+# Aplicar funciones
+df = calcular_eficiencia(df)
+resumen = agrupar_por_planta(df)
 
 # Gráficos
 plt.figure(figsize=(12,5))
